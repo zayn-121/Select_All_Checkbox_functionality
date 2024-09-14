@@ -52,7 +52,7 @@ const SelectAll = () => {
 
   return (
     <React.Fragment>
-      <section className="absolute top-2/4 left-2/4 translate-x--1/2 translate-y--1/2">
+      <section className="flex items-center justify-center min-h-screen">
         <form onSubmit={handleSubmit}>
           <div className="bg-white shadow w-auto h-auto p-4">
             {/* header */}
