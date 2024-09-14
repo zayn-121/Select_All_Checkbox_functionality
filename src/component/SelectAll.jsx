@@ -1,86 +1,95 @@
 import React, { useState } from "react";
 
 const SelectAll = () => {
-  const [items, setItems] = useState([]);
-  const [isChecked, setIsChecked] = useState(false);
+  const itemsList = ["Red", "Green", "Blue"]; // List of items
+  const [selectedItems, setSelectedItems] = useState([]); // Tracks selected items
+  const [isAllSelected, setIsAllSelected] = useState(false); // Tracks if all items are selected
 
+  // Handle "Select All" checkbox
   const handleSelectAll = (e) => {
     const checked = e.target.checked;
     if (checked) {
-      setIsChecked(!isChecked) && setItems([...items])
+      // If checked, select all items
+      setSelectedItems(itemsList);
+      setIsAllSelected(true);
     } else {
-      setIsChecked(!isChecked) && setItems([])
+      // If unchecked, deselect all items
+      setSelectedItems([]);
+      setIsAllSelected(false);
     }
   };
-  const haldleItemSelection = (e) => {
+
+  // Handle individual item selection
+  const handleItemSelection = (e) => {
     const value = e.target.value;
-    // console.log(value)
     const checked = e.target.checked;
-    // console.log(checked)
+
     if (checked) {
-      setItems([...items, value]);
+      setSelectedItems((prevSelectedItems) => [...prevSelectedItems, value]);
     } else {
-      setItems(items.filter((item) => item !== value));
+      setSelectedItems((prevSelectedItems) =>
+        prevSelectedItems.filter((item) => item !== value)
+      );
     }
   };
-  console.log("items", items);
+
+  // Update "Select All" state if all individual items are selected/deselected
+  React.useEffect(() => {
+    if (selectedItems.length === itemsList.length) {
+      setIsAllSelected(true);
+    } else {
+      setIsAllSelected(false);
+    }
+  }, [selectedItems]);
+
+  console.log("Selected items:", selectedItems);
+
+  // Handle form submission
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    alert(selectedItems);
+  }
+
   return (
     <React.Fragment>
-      <section className="absolute top-2/4 left-2/4 translate-x--1/2 translate-y--1/2 ">
-        <form>
-          <div className="bg-white shadow  w-auto h-auto p-4">
+      <section className="absolute top-2/4 left-2/4 translate-x--1/2 translate-y--1/2">
+        <form onSubmit={handleSubmit}>
+          <div className="bg-white shadow w-auto h-auto p-4">
             {/* header */}
             <div>
-              <p className="text-center text-2xl font-bold">
-                Select All Checkbox
-              </p>
+              <p className="text-center text-2xl font-bold">Select All Checkbox</p>
             </div>
 
             {/* body */}
             <div>
               <div>
+                {/* Select All Checkbox */}
                 <div>
                   <input
                     type="checkbox"
-                    value="Select All"
                     onChange={handleSelectAll}
-                    checked={isChecked}
+                    checked={isAllSelected}
                     className="w-4 h-4"
                   />
                   <label className="ml-2">Select All</label>
                 </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    value="Red"
-                    checked={isChecked}
-                    className="w-4 h-4"
-                    onChange={haldleItemSelection}
-                  />
-                  <label className="ml-2">Red </label>
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    value="Green"
-                    checked={isChecked} 
-                    className="w-4 h-4"
-                    onChange={haldleItemSelection}
-                  />
-                  <label className="ml-2">Green </label>
-                </div>
-                <div>
-                  <input
-                    type="checkbox"
-                    value="Blue"
-                    checked={isChecked}
-                    className="w-4 h-4"
-                    onChange={haldleItemSelection}
-                  />
-                  <label className="ml-2">Blue </label>
-                </div>
+
+                {/* Individual Item Checkboxes */}
+                {itemsList.map((item) => (
+                  <div key={item}>
+                    <input
+                      type="checkbox"
+                      value={item}
+                      checked={selectedItems.includes(item)}
+                      onChange={handleItemSelection}
+                      className="w-4 h-4"
+                    />
+                    <label className="ml-2">{item}</label>
+                  </div>
+                ))}
               </div>
             </div>
+
             {/* Submit */}
             <button
               type="submit"
